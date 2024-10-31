@@ -62,11 +62,10 @@ void createNodes(t_node* node, int children_num_index, int* moves_selected, int*
         // Marquer le mouvement comme utilisé pour le niveau actuel
         moves_used_indexes[children_num_index] = child_index;
 
-        // Créer les nœuds enfants pour le niveau 2 et 3
         if (children_num_index < MOVES_NUMBER_EXECUTED - 1) {
-            node->child_nodes[i] = createNode(2, moves_selected[child_index]); // Niveau 2 a 2 enfants
+            node->child_nodes[i] = createNode(MOVES_TOTAL_NUMBER - children_num_index - 1, moves_selected[child_index]);
         } else {
-            node->child_nodes[i] = createNode(0, moves_selected[child_index]); // Niveau 3 est une feuille
+            node->child_nodes[i] = createNode(0, moves_selected[child_index]);
         }
 
         // Appel récursif pour créer les sous-nœuds
