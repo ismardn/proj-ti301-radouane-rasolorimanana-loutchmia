@@ -7,6 +7,12 @@
 
 #include "loc.h"
 
+
+#define DIFFERENT_MOVES_NUMBER 7
+#define MOVES_TOTAL_NUMBER 9
+#define MOVES_NUMBER_EXECUTED 5
+
+
 /**
  * @brief Array of strings for the possible moves of the robot
  */

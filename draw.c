@@ -5,13 +5,14 @@
 #include <stdlib.h>
 #include <time.h>
 #include "draw.h"
+#include "moves.h"
 
 
 int move_draw(float* draw_table) {
     int move_type_index;
 
     int total_sum_proba = 0;
-    for (move_type_index = 0; move_type_index < MOVES_TABLE_LENGTH; move_type_index++) {
+    for (move_type_index = 0; move_type_index < DIFFERENT_MOVES_NUMBER; move_type_index++) {
         total_sum_proba += (int)(draw_table[move_type_index] * 100);
     }
     move_type_index = 0;
@@ -21,7 +22,7 @@ int move_draw(float* draw_table) {
     int cumulative_sum = 0;
     int selected_index;
 
-    for (int move_type_index = 0; move_type_index < MOVES_TABLE_LENGTH; move_type_index++) {
+    for (int move_type_index = 0; move_type_index < DIFFERENT_MOVES_NUMBER; move_type_index++) {
         cumulative_sum += (int)(draw_table[move_type_index] * 100);
         if (rand_value <= cumulative_sum) {
             selected_index = move_type_index;
@@ -36,7 +37,7 @@ int move_draw(float* draw_table) {
 
 
 void moves_selections(int* moves_table, float* draw_table) {
-    for (int move_type_index = 0; move_type_index < MOVES_NUMBER; move_type_index++) {
+    for (int move_type_index = 0; move_type_index < MOVES_TOTAL_NUMBER; move_type_index++) {
         moves_table[move_type_index] = move_draw(draw_table);
     }
 }
