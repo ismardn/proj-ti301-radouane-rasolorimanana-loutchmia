@@ -20,14 +20,21 @@ int isIndexUsed(int current_index, int* moves_used_indexes) {
 
 void buildTree(t_tree* tree, int* moves_selected, int* moves_used_indexes, t_localisation current_loc, t_map map) {
     t_root* root_node = (t_root*) malloc(sizeof(t_root));
-    
+
     root_node->children_num = MOVES_TOTAL_NUMBER;
     root_node->current_loc = current_loc;
+
+    root_node->child_nodes = (t_node**) malloc(root_node->children_num * sizeof(t_node*));
+    for (int child_index = 0; child_index < root_node->children_num; child_index++) {
+        root_node->child_nodes[child_index] = NULL;
+    }
 
     tree->root = root_node;
 
     for (int i = 0; i < MOVES_TOTAL_NUMBER; i++) {
         t_node* new_node = (t_node*) malloc(sizeof(t_node));
+
+        new_node->parent_node = NULL;
 
         new_node->children_num = MOVES_TOTAL_NUMBER - 1;
         new_node->move_associated = (t_move) moves_selected[i];
@@ -40,9 +47,15 @@ void buildTree(t_tree* tree, int* moves_selected, int* moves_used_indexes, t_loc
             new_node->cost = -1;
         }
         
-        root_node->child_nodes[i] = new_node;
+        new_node->child_nodes = (t_node**) malloc(new_node->children_num * sizeof(t_node*));
+        for (int child_index = 0; child_index < new_node->children_num; child_index++) {
+            new_node->child_nodes[child_index] = NULL;
+        }
 
+        root_node->child_nodes[i] = new_node;
+        
         moves_used_indexes[0] = i;
+
         createNodes(root_node->child_nodes[i], 1, moves_selected, moves_used_indexes, map);
     }
 }
