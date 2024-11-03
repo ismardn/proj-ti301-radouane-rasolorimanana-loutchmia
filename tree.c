@@ -5,12 +5,12 @@
 #include <stdlib.h>
 #include "tree.h"
 #include "moves.h"
+#include "map.h"
 
 
 
 
-
-int is_index_used(int current_index, int* moves_used_indexes) {
+int isIndexUsed(int current_index, int* moves_used_indexes) {
     for (int i = 0; i < MOVES_NUMBER_EXECUTED - 1; i++) {
         if (current_index == moves_used_indexes[i]) return 1;
     }
@@ -18,61 +18,80 @@ int is_index_used(int current_index, int* moves_used_indexes) {
 }
 
 
-void buildTree(t_tree* tree, int* moves_selected, int* moves_used_indexes) {
-    // Créer le nœud racine avec 4 enfants pour le niveau 1
-    t_node* root_node = createNode(MOVES_TOTAL_NUMBER, 0); // Le mouvement associé ici n'a pas d'importance pour la racine
+void buildTree(t_tree* tree, int* moves_selected, int* moves_used_indexes, t_localisation current_loc, t_map map) {
+    t_root* root_node = (t_root*) malloc(sizeof(t_root));
+    
+    root_node->children_num = MOVES_TOTAL_NUMBER;
+    root_node->current_loc = current_loc;
+
     tree->root = root_node;
 
-    // Appeler createNodes pour chaque enfant de la racine avec les mouvements correspondants
     for (int i = 0; i < MOVES_TOTAL_NUMBER; i++) {
-        root_node->child_nodes[i] = createNode(MOVES_TOTAL_NUMBER - 1, moves_selected[i]); // Niveau 1 a 3 enfants
-        moves_used_indexes[0] = i;  // Marque le mouvement utilisé au niveau 1
-        createNodes(root_node->child_nodes[i], 1, moves_selected, moves_used_indexes);
+        t_node* new_node = (t_node*) malloc(sizeof(t_node));
+
+        new_node->children_num = MOVES_TOTAL_NUMBER - 1;
+        new_node->move_associated = (t_move) moves_selected[i];
+
+        new_node->resulting_loc = move(current_loc, new_node->move_associated);
+
+        if (isValidLocalisation(new_node->resulting_loc.pos, map.x_max, map.y_max)) {
+            new_node->cost = map.costs[new_node->resulting_loc.pos.x][new_node->resulting_loc.pos.y];
+        } else {
+            new_node->cost = -1;
+        }
+        
+        root_node->child_nodes[i] = new_node;
+
+        moves_used_indexes[0] = i;
+        createNodes(root_node->child_nodes[i], 1, moves_selected, moves_used_indexes, map);
     }
 }
 
 
-t_node* createNode(int children_num, int move_type_index) {
-    t_node* newNode = (t_node*) malloc(sizeof(t_node));
+t_node* createNode(t_node* parent, int children_num, int move_type_index, t_map map) {
+    t_node* new_node = (t_node*) malloc(sizeof(t_node));
 
-    newNode->children_num = children_num;
+    new_node->children_num = children_num;
+    new_node->move_associated = (t_move) move_type_index;
 
-    newNode->value = 0;
-    newNode->move_associated = (t_move) move_type_index;
+    new_node->resulting_loc = move(parent->resulting_loc, new_node->move_associated);
 
-    newNode->child_nodes = (t_node**) malloc (children_num * sizeof(t_node*));
-    for (int child_index = 0; child_index < children_num; child_index++) {
-        newNode->child_nodes[child_index] = NULL;
+    if (isValidLocalisation(new_node->resulting_loc.pos, map.x_max, map.y_max) && parent->cost != -1) {
+        new_node->cost = map.costs[new_node->resulting_loc.pos.x][new_node->resulting_loc.pos.y];
+    } else {
+        new_node->cost = -1;
     }
-    return newNode;
+
+    new_node->child_nodes = (t_node**) malloc(new_node->children_num * sizeof(t_node*));
+    for (int child_index = 0; child_index < new_node->children_num; child_index++) {
+        new_node->child_nodes[child_index] = NULL;
+    }
+
+    return new_node;
 }
 
 
-void createNodes(t_node* node, int children_num_index, int* moves_selected, int* moves_used_indexes) {
-    // Arrêter si nous avons atteint la profondeur maximale
+void createNodes(t_node* node, int children_num_index, int* moves_selected, int* moves_used_indexes, t_map map) {
     if (children_num_index == MOVES_NUMBER_EXECUTED) return;
 
     int i = 0;
     for (int child_index = 0; child_index < MOVES_TOTAL_NUMBER; child_index++) {
-        // Vérifier que le mouvement n'est pas déjà utilisé
-        if (is_index_used(child_index, moves_used_indexes)) {
+        if (isIndexUsed(child_index, moves_used_indexes)) {
             continue;
         }
 
-        // Marquer le mouvement comme utilisé pour le niveau actuel
         moves_used_indexes[children_num_index] = child_index;
 
         if (children_num_index < MOVES_NUMBER_EXECUTED - 1) {
-            node->child_nodes[i] = createNode(MOVES_TOTAL_NUMBER - children_num_index - 1, moves_selected[child_index]);
+            node->child_nodes[i] = createNode(node, MOVES_TOTAL_NUMBER - children_num_index - 1, moves_selected[child_index], map);
         } else {
-            node->child_nodes[i] = createNode(0, moves_selected[child_index]);
+            node->child_nodes[i] = createNode(node, 0, moves_selected[child_index], map);
         }
 
-        // Appel récursif pour créer les sous-nœuds
-        createNodes(node->child_nodes[i], children_num_index + 1, moves_selected, moves_used_indexes);
+        createNodes(node->child_nodes[i], children_num_index + 1, moves_selected, moves_used_indexes, map);
 
         i++;
-        // Stopper quand le nombre d'enfants requis est atteint pour chaque niveau
+
         if (i == node->children_num) break;
     }
 }
