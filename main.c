@@ -37,7 +37,7 @@ int main() {
 void print_node_info(t_node* node, int level) {
     if (node == NULL) return;
     for (int i=0; i<level+1; i++) printf("  ");
-    printf("Level %d - Move: %d, Cost: %d\n", level, node->move_associated, node->cost);
+    printf("Level %d - Move: %d, Pos: %d/%d, Cout:%d\n", level, node->move_associated, node->resulting_loc.pos.x, node->resulting_loc.pos.y, node->cost);
 }
 
 // Fonction pour parcourir l'arbre et afficher les niveaux, mouvements et coûts des nœuds
@@ -59,28 +59,29 @@ void print_tree_levels(t_node* node, int level) {
 int main() {
     // Charger la carte à partir du fichier
     t_map map = createMapFromFile("maps/example1.map");
+    
+    printf("\n\n\n x_max:%d, y_max:%d \n\n\n", map.x_max, map.y_max);
 
     // Initialisation des mouvements possibles
-    int moves_selected[MOVES_TOTAL_NUMBER] = {0, 1, 2, 3};
+    int moves_selected[MOVES_TOTAL_NUMBER] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
     int moves_used_indexes[MOVES_NUMBER_EXECUTED] = {-1};  // Indices utilisés initialisés à -1
 
     // Localisation de départ
-    t_localisation start_loc = {{0, 0}, NORTH};
+    t_localisation start_loc;
+    start_loc.pos.x = 5;
+    start_loc.pos.y = 4;
+    start_loc.ori = NORTH;
 
     // Création de l'arbre
     t_tree tree;
     buildTree(&tree, moves_selected, moves_used_indexes, start_loc, map);
 
     // Affichage des niveaux, mouvements et coûts
-    printf("Tree structure:\n");
     if (tree.root != NULL) {
         print_tree(&tree);
-    } else {
-        fprintf(stderr, "Error: root node is NULL\n");
     }
 
     // Libération de la mémoire de l'arbre (à implémenter si nécessaire)
-    // Free resources in map and tree to avoid memory leaks
 
     return 0;
 }
