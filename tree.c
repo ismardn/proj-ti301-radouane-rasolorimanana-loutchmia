@@ -38,9 +38,9 @@ void buildTree(t_tree* tree, int* moves_selected, int* moves_used_indexes, t_loc
 
         new_node->children_num = MOVES_TOTAL_NUMBER - 1;
         new_node->move_associated = (t_move) moves_selected[i];
-        printf("%d,%d\n\n", current_loc.pos.x, current_loc.pos.y);
+        
         new_node->resulting_loc = move(current_loc, new_node->move_associated);
-        printf("%d,%d\n\n", new_node->resulting_loc.pos.x, new_node->resulting_loc.pos.y);
+
         if (isValidLocalisation(new_node->resulting_loc.pos, map.x_max, map.y_max)) {
             new_node->cost = map.costs[new_node->resulting_loc.pos.x][new_node->resulting_loc.pos.y];
         } else {

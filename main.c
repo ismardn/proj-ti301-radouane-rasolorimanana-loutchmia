@@ -37,7 +37,7 @@ int main() {
 void print_node_info(t_node* node, int level) {
     if (node == NULL) return;
     for (int i=0; i<level+1; i++) printf("  ");
-    printf("Level %d - Move: %d, Pos: %d/%d, Cout:%d\n", level, node->move_associated, node->resulting_loc.pos.x, node->resulting_loc.pos.y, node->cost);
+    printf("Level %d - Move: %d, Pos: %d/%d, Ori:%d, Cout:%d, Move: %s\n", level, node->move_associated, node->resulting_loc.pos.x, node->resulting_loc.pos.y, node->resulting_loc.ori, node->cost, _moves[node->move_associated]);
 }
 
 // Fonction pour parcourir l'arbre et afficher les niveaux, mouvements et coûts des nœuds
@@ -71,7 +71,7 @@ int main() {
     start_loc.pos.x = 5;
     start_loc.pos.y = 4;
     start_loc.ori = NORTH;
-
+    
     // Création de l'arbre
     t_tree tree;
     buildTree(&tree, moves_selected, moves_used_indexes, start_loc, map);
