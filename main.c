@@ -31,13 +31,19 @@ int main() {
     return 0;
 }
 */
+static char **orientation_strings[] = {
+    "NORTH",
+    "EAST",
+    "SOUTH",
+    "WEST"
+};
 
 
 // Fonction pour afficher les informations d'un nœud
 void print_node_info(t_node* node, int level) {
     if (node == NULL) return;
     for (int i=0; i<level+1; i++) printf("  ");
-    printf("Level %d - Move: %d, Pos: %d/%d, Ori:%d, Cout:%d, Move: %s\n", level, node->move_associated, node->resulting_loc.pos.x, node->resulting_loc.pos.y, node->resulting_loc.ori, node->cost, _moves[node->move_associated]);
+    printf("Level %d - Pos: %d/%d (Y/X), Ori:%s (Move: %s); Cout:%d\n", level, node->resulting_loc.pos.y, node->resulting_loc.pos.x, orientation_strings[node->resulting_loc.ori], _moves[node->move_associated], node->cost);
 }
 
 // Fonction pour parcourir l'arbre et afficher les niveaux, mouvements et coûts des nœuds
@@ -60,7 +66,7 @@ int main() {
     // Charger la carte à partir du fichier
     t_map map = createMapFromFile("maps/example1.map");
     
-    printf("\n\n\n x_max:%d, y_max:%d \n\n\n", map.x_max, map.y_max);
+    printf("\n\n\n");
 
     // Initialisation des mouvements possibles
     int moves_selected[MOVES_TOTAL_NUMBER] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
@@ -68,8 +74,8 @@ int main() {
 
     // Localisation de départ
     t_localisation start_loc;
-    start_loc.pos.x = 5;
-    start_loc.pos.y = 4;
+    start_loc.pos.y = 5;
+    start_loc.pos.x = 4;
     start_loc.ori = NORTH;
     
     // Création de l'arbre

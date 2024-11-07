@@ -42,7 +42,7 @@ void buildTree(t_tree* tree, int* moves_selected, int* moves_used_indexes, t_loc
         new_node->resulting_loc = move(current_loc, new_node->move_associated);
 
         if (isValidLocalisation(new_node->resulting_loc.pos, map.x_max, map.y_max)) {
-            new_node->cost = map.costs[new_node->resulting_loc.pos.x][new_node->resulting_loc.pos.y];
+            new_node->cost = map.costs[new_node->resulting_loc.pos.y][new_node->resulting_loc.pos.x];
         } else {
             new_node->cost = -1;
         }
@@ -70,7 +70,7 @@ t_node* createNode(t_node* parent, int children_num, int move_type_index, t_map 
     new_node->resulting_loc = move(parent->resulting_loc, new_node->move_associated);
 
     if (isValidLocalisation(new_node->resulting_loc.pos, map.x_max, map.y_max) && parent->cost != -1) {
-        new_node->cost = map.costs[new_node->resulting_loc.pos.x][new_node->resulting_loc.pos.y];
+        new_node->cost = map.costs[new_node->resulting_loc.pos.y][new_node->resulting_loc.pos.x];
     } else {
         new_node->cost = -1;
     }
