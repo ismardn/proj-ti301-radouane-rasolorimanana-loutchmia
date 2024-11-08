@@ -48,7 +48,7 @@ void print_node_info(t_node* node, int level) {
 
 // Fonction pour parcourir l'arbre et afficher les niveaux, mouvements et coûts des nœuds
 void print_tree(t_tree* tree) {
-    for (int i=0; i<MOVES_TOTAL_NUMBER; i++) {
+    for (int i=0; i<SELECTED_MOVES_NUMBER; i++) {
     print_tree_levels(tree->root->child_nodes[i], 1);
     printf("\n");}
 }
@@ -69,8 +69,8 @@ int main() {
     printf("\n\n\n");
 
     // Initialisation des mouvements possibles
-    int moves_selected[MOVES_TOTAL_NUMBER] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
-    int moves_used_indexes[MOVES_NUMBER_EXECUTED] = {-1};  // Indices utilisés initialisés à -1
+    int moves_selected[SELECTED_MOVES_NUMBER] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+    int moves_used_indexes[EXECUTED_MOVES_NUMBER] = {-1};  // Indices utilisés initialisés à -1
 
     // Localisation de départ
     t_localisation start_loc;
