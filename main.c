@@ -47,19 +47,20 @@ void print_node_info(t_node* node, int level) {
 }
 
 // Fonction pour parcourir l'arbre et afficher les niveaux, mouvements et coûts des nœuds
-void print_tree(t_tree* tree) {
-    for (int i=0; i<SELECTED_MOVES_NUMBER; i++) {
-    print_tree_levels(tree->root->child_nodes[i], 1);
-    printf("\n");}
-}
-
-// Fonction pour parcourir l'arbre et afficher les niveaux, mouvements et coûts des nœuds
 void print_tree_levels(t_node* node, int level) {
     if (node == NULL) return;
     print_node_info(node, level);
     for (int i = 0; i < node->children_num; i++) {
         print_tree_levels(node->child_nodes[i], level + 1);    }
 }
+
+// Fonction pour parcourir l'arbre et afficher les niveaux, mouvements et coûts des nœuds
+void print_tree(t_tree* tree) {
+    for (int i=0; i<SELECTED_MOVES_NUMBER; i++) {
+    print_tree_levels(tree->root->child_nodes[i], 1);
+    printf("\n");}
+}
+
 
 // Fonction principale
 int main() {
