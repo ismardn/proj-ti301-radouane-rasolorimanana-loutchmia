@@ -64,12 +64,14 @@ void buildTree(t_tree* tree, int* moves_selected, int* moves_used_indexes, t_loc
 //Méthode facultative
 void betterPathMinLeaf(t_tree* tree, int* moves_selected, int* moves_used_indexes,t_localisation current_loc,t_map map)
 {
+    //Calcul des coût de chaque case de la carte
     calculateCosts(map);
+    //Initialisation d'un tableau 'chemin' avec ses indices pour mémoriser la séquence de mouvements
     int index_path=0;
     int path[100];
-    int win=0;
     moves_used_indexes[0]=0;
-
+    int win=0;
+    //Initialisation du noeud racine
     tree->root = (t_root*)malloc(sizeof(t_root));
     tree->root->current_loc = current_loc;
     tree->root->children_num = SELECTED_MOVES_NUMBER;
@@ -93,6 +95,7 @@ void betterPathMinLeaf(t_tree* tree, int* moves_selected, int* moves_used_indexe
             }
         }
     }
+    //Si MARc est arrivé à la base
     if (win)
     {
         printf("Feuille de valeur minimale trouvee avec un cout de : %d\n", current_node->cost);
