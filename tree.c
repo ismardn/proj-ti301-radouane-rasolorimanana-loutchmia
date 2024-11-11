@@ -61,63 +61,54 @@ void buildTree(t_tree* tree, int* moves_selected, int* moves_used_indexes, t_loc
     }
 }
 
-//Méthode facultative
-void betterPathMinLeaf(t_tree* tree, int* moves_selected, int* moves_used_indexes,t_localisation current_loc,t_map map)
+//Méthode facultative (ne fonctionne pas encore, à améliorer)
+/*void betterPathMinLeaf(t_tree* tree, int* moves_selected, int* moves_used_indexes,t_localisation current_loc,t_map map)
 {
-    //Calcul des coût de chaque case de la carte
+    //Calcul des coûts de chaque case de la carte
     calculateCosts(map);
     //Initialisation d'un tableau 'chemin' avec ses indices pour mémoriser la séquence de mouvements
-    int index_path=0;
+    int index_path = 0;
     int path[100];
-    moves_used_indexes[0]=0;
-    int win=0;
+    moves_used_indexes[0] = 0;
+    int win = 0;
+
     //Initialisation du noeud racine
-    tree->root = (t_root*)malloc(sizeof(t_root));
+    tree->root = (t_root *) malloc(sizeof(t_root));
     tree->root->current_loc = current_loc;
     tree->root->children_num = SELECTED_MOVES_NUMBER;
-    tree->root->child_nodes = (t_node**)malloc(tree->root->children_num * sizeof(t_node*));
-
-    t_node* current_node = tree->root->child_nodes[0];
+    tree->root->child_nodes = (t_node **) malloc(tree->root->children_num * sizeof(t_node *));
+    t_node *current_node = tree->root->child_nodes[0];
 
     //Parcours du chemin le plus prometteur
-    while (current_node!=NULL)
+    while (current_node != NULL)
     {
         t_node *min_leaf = NULL;
-        int cost_min = COST_UNDEF;
+        int cost_min=COST_UNDEF;
         //Cas où MARC arrive à la station de base
         if (map.costs[current_loc.pos.y][current_loc.pos.x] == 0)
         {
             printf("MARC a atteint la station de base.\n");
-            win=1;
+            win = 1;
             break;
         }
-        for (int i=0; i<current_node->children_num; i++)
-        {
-            t_node *child = current_node->child_nodes[i];
-            if (child != NULL && child->cost != -1 && child->cost < cost_min)
-            {
-                min_leaf = child;
-                cost_min = child->cost;
-            }
-        }
-        //Cas où MARC sort de la carte
-        if (isValidLocalisation(current_loc.pos, map.x_max, map.y_max)==0)
+       //Cas où MARC sort de la carte
+        if (isValidLocalisation(current_loc.pos, map.x_max, map.y_max) == 0)
         {
             printf("MARC est en dehors de la carte.\n");
             win=0;
             break;
         }
     }
+    //Afficher le chemin suivi
     if (win)
     {
         printf("Feuille de valeur minimale trouvee avec un cout de : %d\n", current_node->cost);
         printf("Chemin suivi : \n");
-        for (int i=0; i < index_path; i++)
-        {
+        for (int i = 0; i < index_path; i++) {
             printf("%d", path[i]);
         }
     }
-}
+}*/
 
 
 t_node* createNode(t_node* parent, int children_num, int move_type_index, t_map map) {
