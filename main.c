@@ -81,6 +81,7 @@ int main() {
     
     // Création de l'arbre
     t_tree tree;
+    //betterPathMinLeaf(&tree, moves_selected, moves_used_indexes, start_loc, map);
     buildTree(&tree, moves_selected, moves_used_indexes, start_loc, map);
 
     // Affichage des niveaux, mouvements et coûts
