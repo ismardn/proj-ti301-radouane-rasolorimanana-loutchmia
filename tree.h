@@ -44,6 +44,7 @@ int isIndexUsed(int current_index, int* moves_used_indexes);
 
 void buildTree(t_tree* tree, int* moves_selected, int* moves_used_indexes, t_localisation current_loc, t_map map);
 
+void betterPathMinLeaf(t_tree* tree, int* moves_selected, int* moves_used_indexes, t_localisation current_loc,t_map map);
 
 t_node* createNode(t_node* parent, int children_num, int move_type_index, t_map map);
 
