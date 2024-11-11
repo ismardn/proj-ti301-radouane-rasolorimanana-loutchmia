@@ -2,6 +2,7 @@
 
 
 
+#include <stdio.h>
 #include <stdlib.h>
 #include "tree.h"
 #include "moves.h"
@@ -57,6 +58,49 @@ void buildTree(t_tree* tree, int* moves_selected, int* moves_used_indexes, t_loc
         moves_used_indexes[0] = i;
 
         createNodes(root_node->child_nodes[i], 1, moves_selected, moves_used_indexes, map);
+    }
+}
+
+//Méthode facultative
+void betterPathMinLeaf(t_tree* tree, int* moves_selected, int* moves_used_indexes,t_localisation current_loc,t_map map)
+{
+    calculateCosts(map);
+    int index_path=0;
+    int path[100];
+    int win=0;
+    moves_used_indexes[0]=0;
+
+    tree->root = (t_root*)malloc(sizeof(t_root));
+    tree->root->current_loc = current_loc;
+    tree->root->children_num = SELECTED_MOVES_NUMBER;
+    tree->root->child_nodes = (t_node**)malloc(tree->root->children_num * sizeof(t_node*));
+
+    t_node* current_node = tree->root->child_nodes[0];
+
+    //Parcours du chemin le plus prometteur
+    while (current_node!=NULL)
+    {
+        t_node *min_leaf = NULL;
+        int cost_min = COST_UNDEF;
+
+        for (int i=0; i<current_node->children_num; i++)
+        {
+            t_node *child = current_node->child_nodes[i];
+            if (child != NULL && child->cost != -1 && child->cost < cost_min)
+            {
+                min_leaf = child;
+                cost_min = child->cost;
+            }
+        }
+    }
+    if (win)
+    {
+        printf("Feuille de valeur minimale trouvee avec un cout de : %d\n", current_node->cost);
+        printf("Chemin suivi : \n");
+        for (int i=0; i < index_path; i++)
+        {
+            printf("%d", path[i]);
+        }
     }
 }
 
