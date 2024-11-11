@@ -84,7 +84,13 @@ void betterPathMinLeaf(t_tree* tree, int* moves_selected, int* moves_used_indexe
     {
         t_node *min_leaf = NULL;
         int cost_min = COST_UNDEF;
-
+        //Cas où MARC arrive à la station de base
+        if (map.costs[current_loc.pos.y][current_loc.pos.x] == 0)
+        {
+            printf("MARC a atteint la station de base.\n");
+            win=1;
+            break;
+        }
         for (int i=0; i<current_node->children_num; i++)
         {
             t_node *child = current_node->child_nodes[i];
@@ -94,8 +100,14 @@ void betterPathMinLeaf(t_tree* tree, int* moves_selected, int* moves_used_indexe
                 cost_min = child->cost;
             }
         }
+        //Cas où MARC sort de la carte
+        if (isValidLocalisation(current_loc.pos, map.x_max, map.y_max)==0)
+        {
+            printf("MARC est en dehors de la carte.\n");
+            win=0;
+            break;
+        }
     }
-    //Si MARc est arrivé à la base
     if (win)
     {
         printf("Feuille de valeur minimale trouvee avec un cout de : %d\n", current_node->cost);
