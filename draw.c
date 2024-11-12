@@ -1,13 +1,11 @@
-
-
-
-
 #include <stdlib.h>
 #include <time.h>
 #include "draw.h"
 #include "moves.h"
 
-
+/** 
+ * @brief Sélectionne un mouvement aléatoire basé sur un tableau de probabilités.
+ */
 int move_draw(float* draw_table) {
     int move_type_index;
 
@@ -35,7 +33,9 @@ int move_draw(float* draw_table) {
     return selected_index;
 }
 
-
+/** 
+ * @brief Remplit un tableau de mouvements sélectionnés aléatoirement selon les probabilités du tableau.
+ */
 void moves_selections(int* moves_table, float* draw_table) {
     for (int move_type_index = 0; move_type_index < SELECTED_MOVES_NUMBER; move_type_index++) {
         moves_table[move_type_index] = move_draw(draw_table);

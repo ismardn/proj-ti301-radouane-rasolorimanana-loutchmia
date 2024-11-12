@@ -1,14 +1,11 @@
-
-
-
 #include "cost.h"
 #include "tree.h"
 #include "queue.h"
 #include "moves.h"
 
-
-
-
+/** 
+ * @brief Trouve l'index du noeud ayant le coût le plus bas dans un tableau de noeuds.
+ */
 int index_lowest_cost(t_node* nodes_tab, int tab_length) {
     int minimal_cost = nodes_tab[0]->cost;
     int minimal_index = 0;
@@ -22,7 +19,9 @@ int index_lowest_cost(t_node* nodes_tab, int tab_length) {
     return minimal_index;
 }
 
-
+/** 
+ * @brief Génère la file des mouvements optimaux en fonction des coûts dans l'arbre.
+ */
 t_queue best_moves(t_tree* tree, int* best_moves_index_tab) {
     t_node* current_nodes_tab = tree->root->child_nodes;
     best_moves_index_tab[0] = index_lowest_cost(current_nodes_tab, EXECUTED_MOVES_NUMBER)
@@ -32,4 +31,3 @@ t_queue best_moves(t_tree* tree, int* best_moves_index_tab) {
         best_moves_index_tab[nodes_tab_index] = index_lowest_cost(current_nodes_tab->child_nodes, previous_best_node->children_num);
     }
 }
-
