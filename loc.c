@@ -2,6 +2,7 @@
 // Created by flasque on 19/10/2024.
 //
 
+#include <stdlib.h>
 #include "loc.h"
 
 t_localisation loc_init(int x, int y, t_orientation ori)
@@ -50,3 +51,13 @@ t_position DOWN(t_position pos)
     return new_pos;
 }
 
+/**
+ * @brief Génère une localisation de départ aléatoire dans une grille.
+ */
+t_localisation generate_start_loc(int x_max, int y_max) {
+    t_localisation start_loc;
+    start_loc.pos.x = rand() % x_max;
+    start_loc.pos.y = rand() % y_max;
+    start_loc.ori = (t_orientation) rand() % 4;
+    return start_loc;
+}

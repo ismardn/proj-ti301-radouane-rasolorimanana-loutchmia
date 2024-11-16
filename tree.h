@@ -50,11 +50,10 @@ int isIndexUsed(int current_index, int* moves_used_indexes);
  * @brief Construit l'arbre des mouvements possibles à partir de la localisation actuelle
  * @param tree Pointeur vers l'arbre
  * @param moves_selected Mouvements sélectionnés pour construire l'arbre
- * @param moves_used_indexes Index des mouvements déjà utilisés
  * @param current_loc Localisation actuelle
  * @param map Carte actuelle contenant les coûts
  */
-void buildTree(t_tree* tree, int* moves_selected, int* moves_used_indexes, t_localisation current_loc, t_map map);
+void buildTree(t_tree* tree, int* moves_selected, t_localisation current_loc, t_map map);
 
 /** 
  * @brief Calcule le chemin optimal dans l'arbre (fonction expérimentale, à améliorer)
@@ -80,5 +79,28 @@ t_node* createNode(t_node* parent, int children_num, int move_type_index, t_map 
  * @param map Carte actuelle avec les coûts
  */
 void createNodes(t_node* node, int children_num_index, int* moves_selected, int* moves_used_indexes, t_map map);
+
+/**
+ * @brief Affiche les informations d'un nœud spécifique avec une indentation basée sur son niveau.
+ * @param node Pointeur vers le nœud dont les informations doivent être affichées.
+ * @param level Niveau du nœud dans l'arbre, utilisé pour structurer l'affichage.
+ */
+void display_node_info(t_node* node, int level);
+
+/**
+ * @brief Parcourt et affiche récursivement les niveaux d'un arbre à partir d'un noeud donné.
+ * @param node Pointeur vers le nœud de départ pour l'affichage.
+ * @param level Niveau actuel dans l'arbre pour structurer l'affichage.
+ */
+void display_tree_levels(t_node* node, int level) ;
+
+/**
+ * @brief Affiche l'intégralité de l'arbre en parcourant chaque sous-arbre à partir de la racine.
+ * @param tree Pointeur vers l'arbre à afficher.
+ */
+void display_full_tree(t_tree* tree);
+
+
+
 
 #endif //UNTITLED1_TREE_H

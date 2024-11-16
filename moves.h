@@ -17,12 +17,21 @@
 /**
  * @brief Array of strings for the possible moves of the robot
  */
-static char _moves[8][8] = {"F 10m", "F 20m", "F 30m", "B 10m", "T left", "T right", "U-turn"};
+static char _moves[TYPE_OF_MOVES_NUMBER][16] = {"FORWARD 10m", "FORWARD 20m", "FORWARD 30m", "BACK 10m", "TURN left", "TURN right", "U-turn"};
+
+/**
+ * @brief Tableau contenant les chaînes représentant les orientations cardinales.
+ */
+static char *orientation_strings[] = {
+    "NORTH",
+    "EAST",
+    "SOUTH",
+    "WEST"
+};
 
 /**
  * @brief Enum for the possible moves of the robot
  */
-
 typedef enum e_move
 {
     F_10, // Forward 10 m

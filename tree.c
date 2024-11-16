@@ -17,7 +17,9 @@ int isIndexUsed(int current_index, int* moves_used_indexes) {
 /** 
  * @brief Construit l'arbre des mouvements possibles depuis la localisation actuelle
  */
-void buildTree(t_tree* tree, int* moves_selected, int* moves_used_indexes, t_localisation current_loc, t_map map) {
+void buildTree(t_tree* tree, int* moves_selected, t_localisation current_loc, t_map map) {
+    int* moves_used_indexes = (int*) malloc(EXECUTED_MOVES_NUMBER * sizeof(int));
+
     t_root* root_node = (t_root*) malloc(sizeof(t_root));
 
     root_node->children_num = SELECTED_MOVES_NUMBER;
@@ -159,5 +161,42 @@ void createNodes(t_node* node, int children_num_index, int* moves_selected, int*
         i++;
 
         if (i == node->children_num) break;
+    }
+}
+
+/**
+ * @brief Affiche les informations d'un nœud spécifique avec une indentation basée sur son niveau.
+ */
+void display_node_info(t_node* node, int level) {
+    if (node == NULL) return;
+
+    for (int iteration = 0; iteration < level + 1; iteration++) {
+        printf("  ");
+    }
+
+    printf("Level %d - Pos: %d/%d (Y/X), Ori: %s (Move: %s); Cost: %d\n", level, node->resulting_loc.pos.y, node->resulting_loc.pos.x, orientation_strings[node->resulting_loc.ori], _moves[node->move_associated], node->cost);
+}
+
+/**
+ * @brief Parcourt et affiche récursivement les niveaux d'un arbre à partir d'un nœud donné.
+ */
+void display_tree_levels(t_node* node, int level) {
+    if (node == NULL) return;
+
+    display_node_info(node, level);
+
+    for (int child_index = 0; child_index < node->children_num; child_index++) {
+        display_tree_levels(node->child_nodes[child_index], level + 1);
+    }
+}
+
+/**
+ * @brief Affiche l'intégralité de l'arbre en parcourant chaque sous-arbre à partir de la racine.
+ */
+void display_full_tree(t_tree* tree) {
+    for (int child_index=0; child_index < SELECTED_MOVES_NUMBER; child_index++) {
+        display_tree_levels(tree->root->child_nodes[child_index], 1);
+        
+        printf("\n");
     }
 }

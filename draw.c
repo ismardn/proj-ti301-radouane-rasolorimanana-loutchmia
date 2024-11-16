@@ -6,7 +6,9 @@
 /** 
  * @brief Sélectionne un mouvement aléatoire basé sur un tableau de probabilités.
  */
-int move_draw(float* draw_table) {
+int move_draw() {
+    float draw_table[] = {0.22, 0.15, 0.07, 0.07, 0.21, 0.21, 0.07};
+
     int move_type_index;
 
     int total_sum_proba = 0;
@@ -36,8 +38,12 @@ int move_draw(float* draw_table) {
 /** 
  * @brief Remplit un tableau de mouvements sélectionnés aléatoirement selon les probabilités du tableau.
  */
-void moves_selections(int* moves_table, float* draw_table) {
+int* moves_selections() {
+    int* selected_moves = (int *) malloc(SELECTED_MOVES_NUMBER * sizeof(int));
+
     for (int move_type_index = 0; move_type_index < SELECTED_MOVES_NUMBER; move_type_index++) {
-        moves_table[move_type_index] = move_draw(draw_table);
+        selected_moves[move_type_index] = move_draw();
     }
+
+    return selected_moves;
 }
