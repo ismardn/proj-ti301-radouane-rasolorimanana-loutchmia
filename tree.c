@@ -43,7 +43,7 @@ void buildTree(t_tree* tree, int* moves_selected, t_localisation current_loc, t_
         new_node->children_num = SELECTED_MOVES_NUMBER - 1;
         new_node->move_associated = (t_move) moves_selected[i];
         
-        new_node->resulting_loc = move(current_loc, new_node->move_associated);
+        new_node->resulting_loc = move(current_loc, new_node->move_associated, map);
 
         if (isValidLocalisation(new_node->resulting_loc.pos, map.x_max, map.y_max)) {
             new_node->cost = map.costs[new_node->resulting_loc.pos.y][new_node->resulting_loc.pos.x];
@@ -73,7 +73,7 @@ t_node* createNode(t_node* parent, int children_num, int move_type_index, t_map 
     new_node->children_num = children_num;
     new_node->move_associated = (t_move) move_type_index;
 
-    new_node->resulting_loc = move(parent->resulting_loc, new_node->move_associated);
+    new_node->resulting_loc = move(parent->resulting_loc, new_node->move_associated, map);
 
     if (isValidLocalisation(new_node->resulting_loc.pos, map.x_max, map.y_max) && parent->cost != COST_UNDEF) {
         new_node->cost = map.costs[new_node->resulting_loc.pos.y][new_node->resulting_loc.pos.x];

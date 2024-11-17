@@ -36,12 +36,9 @@ int main() {
 */
 
 int main() {
-    srand(time(NULL));
+    srand(3);
 
     t_map map = createMapFromFile("maps/example1.map");
-
-    int* moves_selected = moves_selections();
-    int phase_movements_number = EXECUTED_MOVES_NUMBER;
 
     printf("Map created with dimensions %d x %d\n", map.y_max, map.x_max);
     for (int i = 0; i < map.y_max; i++) {
@@ -53,24 +50,40 @@ int main() {
     }
     printf("\n");
 
+    int* moves_selected = moves_selections();
+    int phase_movements_number = EXECUTED_MOVES_NUMBER;
+
+    printf("Mouvements selectionnes :\n");
+    for (int i = 0; i < SELECTED_MOVES_NUMBER; i++) {
+        printf("- %s\n", _moves[moves_selected[i]]);
+    }
+    printf("\n\n");
+
     t_localisation start_loc;
     start_loc.pos.x = 4;
     start_loc.pos.y = 6;
     start_loc.ori = NORTH;
     
-    printf("Position de depart generee :\n Position Y : %d, Postion X : %d\nOrientation : %s\n\n", start_loc.pos.y, start_loc.pos.x, orientation_strings[start_loc.ori]);
+    printf("Position de depart generee :\nPosition Y : %d, Postion X : %d\nOrientation : %s\n\n", start_loc.pos.y, start_loc.pos.x, orientation_strings[start_loc.ori]);
 
 
     t_tree tree;
     buildTree(&tree, moves_selected, start_loc, map);
 
     if (tree.root != NULL) {
-        //*
+        /*
         display_full_tree(&tree);
         //*/
     }
 
     t_localisation current_loc = start_loc;
+    int reg_activated;
+
+    if (map.soils[start_loc.pos.y][start_loc.pos.x] == REG) {
+        reg_activated = 1;
+    } else {
+        reg_activated = 0;
+    }
 
     int* best_moves_executed = best_moves(&tree, phase_movements_number);
 
@@ -79,7 +92,7 @@ int main() {
     } else {
         printf("Liste des meilleurs mouvements :\n");
         for (int moves_index = 0; moves_index < phase_movements_number; moves_index++) {
-            current_loc = move(current_loc, best_moves_executed[moves_index]);
+            current_loc = move_exec(current_loc, best_moves_executed[moves_index], map, &reg_activated);
             printf("%s\n", _moves[best_moves_executed[moves_index]]);
 
             if (map.soils[current_loc.pos.x][current_loc.pos.y] == 0) {
@@ -89,7 +102,12 @@ int main() {
         }
     }
 
-    // Libération de la mémoire de l'arbre (à implémenter si nécessaire)
+    if (reg_activated) {
+        phase_movements_number = EXECUTED_MOVES_NUMBER - 1;
+        reg_activated = 0;
+    }
+
+    // Prochaine phase
 
     return 0;
 }
