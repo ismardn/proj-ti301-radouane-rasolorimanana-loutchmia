@@ -1,9 +1,12 @@
 #include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
 #include "map.h"
 #include "moves.h"
 #include "tree.h"
 #include "loc.h"
-
+#include "cost.h"
+#include "draw.h"
 
 
 /*
@@ -31,65 +34,80 @@ int main() {
     return 0;
 }
 */
-static char **orientation_strings[] = {
-    "NORTH",
-    "EAST",
-    "SOUTH",
-    "WEST"
-};
 
-
-// Fonction pour afficher les informations d'un nœud
-void print_node_info(t_node* node, int level) {
-    if (node == NULL) return;
-    for (int i=0; i<level+1; i++) printf("  ");
-    printf("Level %d - Pos: %d/%d (Y/X), Ori:%s (Move: %s); Cout:%d\n", level, node->resulting_loc.pos.y, node->resulting_loc.pos.x, orientation_strings[node->resulting_loc.ori], _moves[node->move_associated], node->cost);
-}
-
-// Fonction pour parcourir l'arbre et afficher les niveaux, mouvements et coûts des nœuds
-void print_tree_levels(t_node* node, int level) {
-    if (node == NULL) return;
-    print_node_info(node, level);
-    for (int i = 0; i < node->children_num; i++) {
-        print_tree_levels(node->child_nodes[i], level + 1);    }
-}
-
-// Fonction pour parcourir l'arbre et afficher les niveaux, mouvements et coûts des nœuds
-void print_tree(t_tree* tree) {
-    for (int i=0; i<SELECTED_MOVES_NUMBER; i++) {
-    print_tree_levels(tree->root->child_nodes[i], 1);
-    printf("\n");}
-}
-
-
-// Fonction principale
 int main() {
-    // Charger la carte à partir du fichier
+    srand(3);
+
     t_map map = createMapFromFile("maps/example1.map");
-    
-    printf("\n\n\n");
 
-    // Initialisation des mouvements possibles
-    int moves_selected[SELECTED_MOVES_NUMBER] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
-    int moves_used_indexes[EXECUTED_MOVES_NUMBER] = {-1};  // Indices utilisés initialisés à -1
+    printf("Map created with dimensions %d x %d\n", map.y_max, map.x_max);
+    for (int i = 0; i < map.y_max; i++) {
+        for (int j = 0; j < map.x_max; j++)
+        {
+            printf("%d ", map.soils[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
 
-    // Localisation de départ
+    int* moves_selected = moves_selections();
+    int phase_movements_number = EXECUTED_MOVES_NUMBER;
+
+    printf("Mouvements selectionnes :\n");
+    for (int i = 0; i < SELECTED_MOVES_NUMBER; i++) {
+        printf("- %s\n", _moves[moves_selected[i]]);
+    }
+    printf("\n\n");
+
     t_localisation start_loc;
-    start_loc.pos.y = 5;
     start_loc.pos.x = 4;
+    start_loc.pos.y = 6;
     start_loc.ori = NORTH;
     
-    // Création de l'arbre
-    t_tree tree;
-    //betterPathMinLeaf(&tree, moves_selected, moves_used_indexes, start_loc, map);
-    buildTree(&tree, moves_selected, moves_used_indexes, start_loc, map);
+    printf("Position de depart generee :\nPosition Y : %d, Postion X : %d\nOrientation : %s\n\n", start_loc.pos.y, start_loc.pos.x, orientation_strings[start_loc.ori]);
 
-    // Affichage des niveaux, mouvements et coûts
+
+    t_tree tree;
+    buildTree(&tree, moves_selected, start_loc, map);
+
     if (tree.root != NULL) {
-        print_tree(&tree);
+        /*
+        display_full_tree(&tree);
+        //*/
     }
 
-    // Libération de la mémoire de l'arbre (à implémenter si nécessaire)
+    t_localisation current_loc = start_loc;
+    int reg_activated;
+
+    if (map.soils[start_loc.pos.y][start_loc.pos.x] == REG) {
+        reg_activated = 1;
+    } else {
+        reg_activated = 0;
+    }
+
+    int* best_moves_executed = best_moves(&tree, phase_movements_number);
+
+    if (best_moves_executed == NULL) {
+        printf("La meilleure suite de mouvements n'a pas ete trouvee.\n");
+    } else {
+        printf("Liste des meilleurs mouvements :\n");
+        for (int moves_index = 0; moves_index < phase_movements_number; moves_index++) {
+            current_loc = move_exec(current_loc, best_moves_executed[moves_index], map, &reg_activated);
+            printf("%s\n", _moves[best_moves_executed[moves_index]]);
+
+            if (map.soils[current_loc.pos.x][current_loc.pos.y] == 0) {
+                printf("Le rover a retrouve la station ! Bien joue !");
+                break;
+            }
+        }
+    }
+
+    if (reg_activated) {
+        phase_movements_number = EXECUTED_MOVES_NUMBER - 1;
+        reg_activated = 0;
+    }
+
+    // Prochaine phase
 
     return 0;
 }

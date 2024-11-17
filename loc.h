@@ -80,4 +80,12 @@ t_position UP(t_position);
  */
 t_position DOWN(t_position);
 
+/**
+ * @brief Génère une localisation de départ aléatoire dans une grille.
+ * @param x_max La limite maximale pour la coordonnée x (non incluse).
+ * @param y_max La limite maximale pour la coordonnée y (non incluse).
+ * @return t_localisation
+ */
+t_localisation generate_start_loc(int x_max, int y_max);
+
 #endif //UNTITLED1_LOC_H

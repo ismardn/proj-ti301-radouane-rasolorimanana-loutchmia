@@ -6,6 +6,7 @@
 #define UNTITLED1_MAP_H
 
 #define COST_UNDEF 65535
+
 /**
  * @brief Enum for the possible soils of the map
  */
