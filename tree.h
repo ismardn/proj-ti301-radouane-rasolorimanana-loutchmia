@@ -42,9 +42,10 @@ typedef struct s_tree
  * @brief Vérifie si un index a déjà été utilisé
  * @param current_index L'index actuel
  * @param moves_used_indexes Tableau des index déjà utilisés
+ * @param children_num_index Indice correspondant au "niveau" de l'arbre
  * @return 1 si l'index est utilisé, 0 sinon
  */
-int isIndexUsed(int current_index, int* moves_used_indexes);
+int isIndexUsed(int current_index, int* moves_used_indexes, int children_num_index);
 
 /** 
  * @brief Construit l'arbre des mouvements possibles à partir de la localisation actuelle

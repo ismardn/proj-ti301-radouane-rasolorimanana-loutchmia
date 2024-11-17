@@ -4,11 +4,12 @@
 #include "moves.h"
 #include "map.h"
 
+
 /** 
  * @brief Vérifie si un index est déjà utilisé dans le tableau moves_used_indexes
  */
-int isIndexUsed(int current_index, int* moves_used_indexes) {
-    for (int i = 0; i < EXECUTED_MOVES_NUMBER - 1; i++) {
+int isIndexUsed(int current_index, int* moves_used_indexes, int children_num_index) {
+    for (int i = 0; i < children_num_index; i++) {
         if (current_index == moves_used_indexes[i]) return 1;
     }
     return 0;
@@ -19,6 +20,9 @@ int isIndexUsed(int current_index, int* moves_used_indexes) {
  */
 void buildTree(t_tree* tree, int* moves_selected, t_localisation current_loc, t_map map) {
     int* moves_used_indexes = (int*) malloc(EXECUTED_MOVES_NUMBER * sizeof(int));
+    for (int i = 0; i < EXECUTED_MOVES_NUMBER; i++) {
+        moves_used_indexes[i] = -1;
+    }
 
     t_root* root_node = (t_root*) malloc(sizeof(t_root));
 
@@ -44,7 +48,7 @@ void buildTree(t_tree* tree, int* moves_selected, t_localisation current_loc, t_
         if (isValidLocalisation(new_node->resulting_loc.pos, map.x_max, map.y_max)) {
             new_node->cost = map.costs[new_node->resulting_loc.pos.y][new_node->resulting_loc.pos.x];
         } else {
-            new_node->cost = -1;
+            new_node->cost = COST_UNDEF;
         }
         
         new_node->child_nodes = (t_node**) malloc(new_node->children_num * sizeof(t_node*));
@@ -60,57 +64,6 @@ void buildTree(t_tree* tree, int* moves_selected, t_localisation current_loc, t_
     }
 }
 
-
-
-//Méthode facultative (ne fonctionne pas encore, à améliorer)
-/*void betterPathMinLeaf(t_tree* tree, int* moves_selected, int* moves_used_indexes,t_localisation current_loc,t_map map)
-{
-    //Calcul des coûts de chaque case de la carte
-    calculateCosts(map);
-    //Initialisation d'un tableau 'chemin' avec ses indices pour mémoriser la séquence de mouvements
-    int index_path = 0;
-    int path[100];
-    moves_used_indexes[0] = 0;
-    int win = 0;
-    //Initialisation du noeud racine
-    tree->root = (t_root *) malloc(sizeof(t_root));
-    tree->root->current_loc = current_loc;
-    tree->root->children_num = SELECTED_MOVES_NUMBER;
-    tree->root->child_nodes = (t_node **) malloc(tree->root->children_num * sizeof(t_node *));
-    t_node *current_node = tree->root->child_nodes[0];
-    //Parcours du chemin le plus prometteur
-    while (current_node != NULL)
-    {
-        t_node *min_leaf = NULL;
-        int cost_min=COST_UNDEF;
-        //Cas où MARC arrive à la station de base
-        if (map.costs[current_loc.pos.y][current_loc.pos.x] == 0)
-        {
-            printf("MARC a atteint la station de base.\n");
-            win = 1;
-            break;
-        }
-       //Cas où MARC sort de la carte
-        if (isValidLocalisation(current_loc.pos, map.x_max, map.y_max) == 0)
-        {
-            printf("MARC est en dehors de la carte.\n");
-            win=0;
-            break;
-        }
-    }
-    //Afficher le chemin suivi
-    if (win)
-    {
-        printf("Feuille de valeur minimale trouvee avec un cout de : %d\n", current_node->cost);
-        printf("Chemin suivi : \n");
-        for (int i = 0; i < index_path; i++) {
-            printf("%d", path[i]);
-        }
-    }
-}*/
-
-
-
 /** 
  * @brief Crée un nouveau noeud avec les informations spécifiées
  */
@@ -122,10 +75,10 @@ t_node* createNode(t_node* parent, int children_num, int move_type_index, t_map 
 
     new_node->resulting_loc = move(parent->resulting_loc, new_node->move_associated);
 
-    if (isValidLocalisation(new_node->resulting_loc.pos, map.x_max, map.y_max) && parent->cost != -1) {
+    if (isValidLocalisation(new_node->resulting_loc.pos, map.x_max, map.y_max) && parent->cost != COST_UNDEF) {
         new_node->cost = map.costs[new_node->resulting_loc.pos.y][new_node->resulting_loc.pos.x];
     } else {
-        new_node->cost = -1;
+        new_node->cost = COST_UNDEF;
     }
 
     new_node->child_nodes = (t_node**) malloc(new_node->children_num * sizeof(t_node*));
@@ -144,7 +97,7 @@ void createNodes(t_node* node, int children_num_index, int* moves_selected, int*
 
     int i = 0;
     for (int child_index = 0; child_index < SELECTED_MOVES_NUMBER; child_index++) {
-        if (isIndexUsed(child_index, moves_used_indexes)) {
+        if (isIndexUsed(child_index, moves_used_indexes, children_num_index)) {
             continue;
         }
 
@@ -200,3 +153,55 @@ void display_full_tree(t_tree* tree) {
         printf("\n");
     }
 }
+
+
+
+//Méthode facultative (ne fonctionne pas encore, à améliorer)
+/*void betterPathMinLeaf(t_tree* tree, int* moves_selected, int* moves_used_indexes,t_localisation current_loc,t_map map)
+{
+    //Calcul des coûts de chaque case de la carte
+    calculateCosts(map);
+    //Initialisation d'un tableau 'chemin' avec ses indices pour mémoriser la séquence de mouvements
+    int index_path = 0;
+    int path[100];
+    moves_used_indexes[0] = 0;
+    int win = 0;
+    //Initialisation du noeud racine
+    tree->root = (t_root *) malloc(sizeof(t_root));
+    tree->root->current_loc = current_loc;
+    tree->root->children_num = SELECTED_MOVES_NUMBER;
+    tree->root->child_nodes = (t_node **) malloc(tree->root->children_num * sizeof(t_node *));
+    t_node *current_node = tree->root->child_nodes[0];
+    //Parcours du chemin le plus prometteur
+    while (current_node != NULL)
+    {
+        t_node *min_leaf = NULL;
+        int cost_min=COST_UNDEF;
+        //Cas où MARC arrive à la station de base
+        if (map.costs[current_loc.pos.y][current_loc.pos.x] == 0)
+        {
+            printf("MARC a atteint la station de base.\n");
+            win = 1;
+            break;
+        }
+       //Cas où MARC sort de la carte
+        if (isValidLocalisation(current_loc.pos, map.x_max, map.y_max) == 0)
+        {
+            printf("MARC est en dehors de la carte.\n");
+            win=0;
+            break;
+        }
+    }
+    //Afficher le chemin suivi
+    if (win)
+    {
+        printf("Feuille de valeur minimale trouvee avec un cout de : %d\n", current_node->cost);
+        printf("Chemin suivi : \n");
+        for (int i = 0; i < index_path; i++) {
+            printf("%d", path[i]);
+        }
+    }
+}*/
+
+
+
