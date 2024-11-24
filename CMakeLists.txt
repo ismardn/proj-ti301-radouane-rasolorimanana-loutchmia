@@ -16,4 +16,6 @@ add_executable(untitled1 main.c
         stack.h
         tree.c
         cost.c
-        cost.h)
+        cost.h
+        draw.h
+        draw.c)
