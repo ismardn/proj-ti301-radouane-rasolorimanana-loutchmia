@@ -66,16 +66,25 @@ int main() {
     
     printf("Position de depart generee :\nPosition Y : %d, Postion X : %d\nOrientation : %s\n\n", start_loc.pos.y, start_loc.pos.x, orientation_strings[start_loc.ori]);
 
-
+    double execution_time_tree = 0.0;
+    clock_t begin_build = clock();
+    
     t_tree tree;
     buildTree(&tree, moves_selected, start_loc, map);
 
+    clock_t end_build = clock();
+    execution_time_tree = ((double)(end_build-begin_build))/CLOCKS_PER_SEC;
+    
     if (tree.root != NULL) {
         /*
         display_full_tree(&tree);
         //*/
     }
+    printf("Temps d'execution de la phase de construction de l'arbre : %.3f secondes\n", execution_time_tree);
 
+    double execution_time_best_moves = 0.0;
+    clock_t begin_best_moves = clock();
+    
     t_localisation current_loc = start_loc;
     int reg_activated;
 
@@ -86,7 +95,11 @@ int main() {
     }
 
     int* best_moves_executed = best_moves(&tree, phase_movements_number);
-
+    
+    clock_t end_best_moves = clock();
+    execution_time_best_moves = ((double)(end_best_moves - begin_best_moves)) / CLOCKS_PER_SEC;
+    printf("Temps d'execution pour calculer le chemin de la racine vers la feuille : %.3f secondes\n", execution_time_best_moves);
+    
     if (best_moves_executed == NULL) {
         printf("La meilleure suite de mouvements n'a pas ete trouvee.\n");
     } else {
